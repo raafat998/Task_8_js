@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Calculator</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        .container {
+            margin: 30px;
+            display: grid;
+            gap: 10px;
+            padding: 5px;
+            height: 100%;
+            grid-template-columns: repeat(4, 1fr);
+            margin-left: 25%;
+            margin-right: 25%;
+        }
+
+        .child {
+            background-color: rgba(255, 255, 255, 0.775);
+            text-align: center;
+            line-height: 100px;
+            height: 150px;
+            box-shadow: 0 6px 0 rgb(128, 166, 187);
+            color: rgb(111, 111, 111);
+        }
+
+        .icon {
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            font-size: 24px;
+            cursor: pointer;
+            color: black;
+        }
+
+        .dark-mode {
+            background-color: #333;
+            color: white;
+        }
+    </style>
+</head>
+
+<body style="background-color: rgb(70, 130, 180);">
+    <i class="fas fa-sun icon" id="themeIcon"></i>
+
+    <section style="background-color: rgb(121, 211, 211);" class="container">
+        <section
+            style="background-color: rgba(244, 248, 230, 0.885); grid-column:span 4; margin-top: 10px; margin-bottom: 10px; margin-right: 5px;margin-left: 5px;"
+            class="child c--2">
+            <h1 id="display" style="margin-top: 25%; "></h1>
+        </section>
+        <section style="margin-left: 10px;" class="child c--2">
+            <h1 style="margin-top: 25%; ">1</h1>
+        </section>
+        <section class="child c--3">
+            <h1 style="margin-top: 25%; ">2</h1>
+        </section>
+        <section class="child c--4">
+            <h1 style="margin-top: 25%; ">3</h1>
+        </section>
+        <section style="background-color: rgb(255, 232, 82);margin-right: 10px;" class="child c--6">
+            <h1 style="margin-top: 25%;">+</h1>
+        </section>
+        <section style="margin-left: 10px;" class="child c--7">
+            <h1 style="margin-top: 25%; ">4</h1>
+        </section>
+        <section class="child c--8">
+            <h1 style="margin-top: 25%; ">5</h1>
+        </section>
+        <section class="child c--9">
+            <h1 style="margin-top: 25%; ">6</h1>
+        </section>
+        <section style="background-color: rgb(255, 232, 82);margin-right: 10px;" class="child c--6">
+            <h1 style="margin-top: 25%;">+</h1>
+        </section>
+        <section style="margin-left: 10px;" class="child c--11">
+            <h1 style="margin-top: 25%; ">7</h1>
+        </section>
+        <section class="child c--12">
+            <h1 style="margin-top: 25%; ">8</h1>
+        </section>
+        <section class="child c--13">
+            <h1 style="margin-top: 25%; ">9</h1>
+        </section>
+        <section style="background-color: rgb(255, 232, 82);margin-right: 10px;" class="child c--6">
+            <h1 style="margin-top: 25%;">*</h1>
+        </section>
+        <section style="margin-left: 10px;margin-bottom: 10px;background-color: rgb(254, 132, 132);" class="child c--15">
+            <h1 style="margin-top: 25%; ">C</h1>
+        </section>
+        <section class="child c--16">
+            <h1 style="margin-top: 25%; ">0</h1>
+        </section>
+        <section class="child c--17">
+            <h1 style="margin-top: 25%; ">=</h1>
+        </section>
+        <section style="background-color: rgb(255, 232, 82);margin-right: 10px;" class="child c--6">
+            <h1 style="margin-top: 25%;">/</h1>
+        </section>
+    </section>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const buttons = document.querySelectorAll('.child');
+            const display = document.getElementById('display');
+            const themeIcon = document.getElementById('themeIcon');
+            let currentInput = '';
+            let operator = '';
+            let firstOperand = '';
+            let secondOperand = '';
+
+            // Check sessionStorage for theme
+            if (sessionStorage.getItem('theme') === 'dark') {
+                document.body.style.backgroundColor = 'rgb(51, 51, 51)';
+                themeIcon.classList.replace('fa-sun', 'fa-moon');
+                themeIcon.style.color = 'white';
+            }
+
+            buttons.forEach(button => {
+                button.addEventListener('click', () => {
+                    const value = button.textContent.trim();
+
+                    if (!isNaN(value) || value === '0') {
+                        currentInput += value;
+                        display.textContent = currentInput;
+                    } else if (value === 'C') {
+                        currentInput = '';
+                        firstOperand = '';
+                        secondOperand = '';
+                        operator = '';
+                        display.textContent = '';
+                    } else if (value === '=') {
+                        if (firstOperand && operator && currentInput) {
+                            secondOperand = currentInput;
+                            display.textContent = calculate(firstOperand, secondOperand, operator);
+                            currentInput = display.textContent;
+                            firstOperand = '';
+                            secondOperand = '';
+                            operator = '';
+                        }
+                    } else {
+                        if (!operator) {
+                            firstOperand = currentInput;
+                            operator = value;
+                            currentInput = '';
+                        } else if (currentInput) {
+                            secondOperand = currentInput;
+                            display.textContent = calculate(firstOperand, secondOperand, operator);
+                            firstOperand = display.textContent;
+                            operator = value;
+                            currentInput = '';
+                        }
+                    }
+                });
+            });
+
+            themeIcon.addEventListener('click', () => {
+                if (document.body.style.backgroundColor === 'rgb(51, 51, 51)') {
+                    document.body.style.backgroundColor = 'rgb(70, 130, 180)';
+                    themeIcon.classList.replace('fa-moon', 'fa-sun');
+                    themeIcon.style.color = 'black';
+                    sessionStorage.setItem('theme', 'light');
+                } else {
+                    document.body.style.backgroundColor = 'rgb(51, 51, 51)';
+                    themeIcon.classList.replace('fa-sun', 'fa-moon');
+                    themeIcon.style.color = 'white';
+                    sessionStorage.setItem('theme', 'dark');
+                }
+            });
+
+            function calculate(first, second, operator) {
+                const a = parseFloat(first);
+                const b = parseFloat(second);
+                switch (operator) {
+                    case '+':
+                        return a + b;
+                    case '-':
+                        return a - b;
+                    case '*':
+                        return a * b;
+                    case '/':
+                        return a / b;
+                    default:
+                        return 0;
+                }
+            }
+        });
+    </script>
+</body>
+
+</html>

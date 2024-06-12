@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <div style="background-color: white;border-radius: 20px;" class="quantity-controls">
+        <button style=" background-color: white;color: black;border: none;font-weight: bold;" class="btn btn-sm btn-secondary decrease-quantity" data-id="${item.id}">-</button>
+        
+        <button style=" background-color: black; color: white;" class="btn btn-sm btn-secondary " data-id="${item.id}">${item.quantity}</button>
+
+        <button style=" background-color: white;color: black;" class="btn btn-sm btn-secondary increase-quantity" data-id="${item.id}">+</button>
+    </div>
+    <button style="background-color: black; font-size: 20px;border-radius: 50%;color: white;font-weight: bold;" class="btn btn-danger btn-sm remove-from-cart" data-id="${item.id}">X</button>
+
+</body>
+</html>
